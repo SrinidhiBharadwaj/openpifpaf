@@ -7,9 +7,22 @@ _CATEGORIES = ['argoverse']
 
 #Name: Name of the keypoints
 LANE_KEYPOINTS = [
-    'head', #1
-    'control-pt1', #2
-    'tail', #3
+    #Straight line segment
+    'head-straight', #1
+    'control-pt-straight_1', #2
+    'tail-straight', #3
+    #Right handed curve
+    'head-right', #4
+    'control-pt-right_1', #5
+    'tail-right', #6
+    #Left handed curve
+    'head-left', #7
+    'control-pt-left_1', #8
+    'tail-left', #9
+    #Stop line
+    'head-stop', #10
+    'control-pt-stop_1', #11
+    'tail-stop', #12
 ]
 
 #Skeleton: Defines the connections between the keypoints
@@ -18,7 +31,15 @@ LANE_KEYPOINTS = [
 
 #For a segment with just 2 keypoint, we need only 2 segmets (head-control point-tail)
 LANE_SKELETON = [
-    (1,2), (2, 3)
+    #Stright line
+    (1,2), (2, 3),
+    #Right handed curve
+    (4,5), (5,6),
+    #Left handed curve
+    (7,8), (8,9),
+    #Stop line
+    (10,11), (11,12),
+
 ]
 
 #Sigmas: Size of the area to compute the object key point similarity
@@ -34,8 +55,27 @@ LANE_SCORE_WEIGHTS = [5.0] * split + [3.0] * split + [1.0] * split + [0.5] * spl
 #Categories: Represents the categories of the keypoints, in this case, keypoints are only of lanes
 LANE_CATEGORIES = ['lane']
 
-#Pose: Not sure yet about how to populate
-LANE_POSE = np.array([])
+#Pose: Standard pose for intersection
+# [x, y, visibility] - v=2.0 shows that the keypoint is visible
+# In our dataset, all the keypoints are visible
+# Reference: https://github.com/jin-s13/COCO-WholeBody/blob/master/data_format.md
+LANE_POSE = np.array([
+    [0.0, 0.5, 2.0], #1
+    [0.0, 0.0, 2.0], #2 - Origin
+    [0.0, -0.5, 2.0], #3
+
+    [0.0, 0.0, 2.0], #4
+    [0.5, 0.4, 2.0], #5
+    [1.2, 0.5, 2.0], #6
+
+    [0.0, 0.0, 2.0], #7
+    [-0.5, 0.4, 2.0], #8
+    [-1.2, 0.5, 2.0], #9
+
+    [-0.5, -0.5, 2.0], #10
+    [0.0, -0.5, 2.0], #11
+    [0.5, -0.5, 2.0], #12
+])
 
 assert len(LANE_POSE) == len(LANE_KEYPOINTS) == len(LANE_SIGMAS) \
        == len(LANE_SCORE_WEIGHTS), "Dimension mismatch!"
