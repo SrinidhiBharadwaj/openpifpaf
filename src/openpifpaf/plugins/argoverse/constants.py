@@ -1,28 +1,28 @@
 import os
 import numpy as np
 
-from Experiments.openpifpaf.src.openpifpaf.plugins.animalpose.constants import draw_skeletons
+#from constants import draw_skeletons
 
-_CATEGORIES = ['argoverse']
+_CATEGORIES = ['argo']
 
 #Name: Name of the keypoints
 LANE_KEYPOINTS = [
     #Straight line segment
-    'head-straight', #1
-    'control-pt-straight_1', #2
-    'tail-straight', #3
-    #Right handed curve
-    'head-right', #4
-    'control-pt-right_1', #5
-    'tail-right', #6
-    #Left handed curve
-    'head-left', #7
-    'control-pt-left_1', #8
-    'tail-left', #9
-    #Stop line
-    'head-stop', #10
-    'control-pt-stop_1', #11
-    'tail-stop', #12
+    'head', #1
+    'control-pt_1', #2
+    'tail', #3
+    # #Right handed curve
+    # 'head-right', #4
+    # 'control-pt-right_1', #5
+    # 'tail-right', #6
+    # #Left handed curve
+    # 'head-left', #7
+    # 'control-pt-left_1', #8
+    # 'tail-left', #9
+    # #Stop line
+    # 'head-stop', #10
+    # 'control-pt-stop_1', #11
+    # 'tail-stop', #12
 ]
 
 #Skeleton: Defines the connections between the keypoints
@@ -33,12 +33,12 @@ LANE_KEYPOINTS = [
 LANE_SKELETON = [
     #Stright line
     (1,2), (2, 3),
-    #Right handed curve
-    (4,5), (5,6),
-    #Left handed curve
-    (7,8), (8,9),
-    #Stop line
-    (10,11), (11,12),
+    # #Right handed curve
+    # (4,5), (5,6),
+    # #Left handed curve
+    # (7,8), (8,9),
+    # #Stop line
+    # (10,11), (11,12),
 
 ]
 
@@ -64,17 +64,17 @@ LANE_POSE = np.array([
     [0.0, 0.0, 2.0], #2 - Origin
     [0.0, -0.5, 2.0], #3
 
-    [0.0, 0.0, 2.0], #4
-    [0.5, 0.4, 2.0], #5
-    [1.2, 0.5, 2.0], #6
+    # [0.0, 0.0, 2.0], #4
+    # [0.5, 0.4, 2.0], #5
+    # [1.2, 0.5, 2.0], #6
 
-    [0.0, 0.0, 2.0], #7
-    [-0.5, 0.4, 2.0], #8
-    [-1.2, 0.5, 2.0], #9
+    # [0.0, 0.0, 2.0], #7
+    # [-0.5, 0.4, 2.0], #8
+    # [-1.2, 0.5, 2.0], #9
 
-    [-0.5, -0.5, 2.0], #10
-    [0.0, -0.5, 2.0], #11
-    [0.5, -0.5, 2.0], #12
+    # [-0.5, -0.5, 2.0], #10
+    # [0.0, -0.5, 2.0], #11
+    # [0.5, -0.5, 2.0], #12
 ])
 
 assert len(LANE_POSE) == len(LANE_KEYPOINTS) == len(LANE_SIGMAS) \

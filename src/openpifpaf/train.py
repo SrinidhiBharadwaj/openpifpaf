@@ -134,7 +134,7 @@ def main():
     args = cli()
 
     datamodule = datasets.factory(args.dataset)
-
+    print(datamodule)
     net_cpu, start_epoch = network.Factory().factory(head_metas=datamodule.head_metas)
     loss = network.losses.Factory().factory(datamodule.head_metas)
 

@@ -21,12 +21,12 @@ class ArgoversePlugin(DataModule):
 
     #Adding placeholders for training, validation and test set
 
-    train_annotations = 'pathhere'
-    val_annotations = 'pathhere'
-    eval_annotations = 'pathhere'
+    train_annotations = 'dataset-argoverse/train_data_anns.json'
+    val_annotations = 'dataset-argoverse/val_data_anns.json'
+    eval_annotations = val_annotations
 
-    train_image_dir = 'pathhere'
-    val_image_dir = 'pathhere'
+    train_image_dir = 'data/images/train_data/'
+    val_image_dir = 'data/images/val_data/'
     eval_image_dir = val_image_dir
 
     orientation_invariant = 0.0
@@ -36,6 +36,9 @@ class ArgoversePlugin(DataModule):
     upsample_stride = 1
     min_kp_anns = 1
     b_min = 1  # 1 pixel
+    square_edge = 513
+    extended_scale = False
+    augmentation = True
 
     eval_annotation_filter = False #Setting evaluation annotation to false
     eval_long_edge = 0  # set to zero to deactivate rescaling
@@ -91,7 +94,7 @@ class ArgoversePlugin(DataModule):
                            help='augment with blur')
         assert cls.augmentation
         group.add_argument('--argoverse-no-augmentation',
-                           dest='apollo_augmentation',
+                           dest='argoverse_augmentation',
                            default=True, action='store_false',
                            help='do not apply data augmentation')
         group.add_argument('--argoverse-rescale-images',
@@ -110,6 +113,7 @@ class ArgoversePlugin(DataModule):
                            dest='argoverse_apply_local_centrality',
                            default=False, action='store_true',
                            help='Weigh the CIF and CAF head during training.')
+        
 
     @classmethod
     def configure(cls, args:argparse.Namespace):
@@ -133,77 +137,77 @@ class ArgoversePlugin(DataModule):
         cls.min_kp_anns = args.argoverse_min_kp_anns
         cls.b_min = args.argoverse_bmin
 
-        def _preprocess(self):
-            encoders = (encoder.Cif(self.head_metas[0], bmin=self.b_min),
-                        encoder.Caf(self.head_metas[1], bmin=self.b_min))
+    def _preprocess(self):
+        encoders = (encoder.Cif(self.head_metas[0], bmin=self.b_min),
+                    encoder.Caf(self.head_metas[1], bmin=self.b_min))
 
-            #Transforms.Compose is chaining different transformations together
-            if not self.augmentation:
-                return transforms.Compose([
-                    transforms.NormalizeAnnotations(),
-                    transforms.RescaleAbsolute(self.square_edge),
-                    transforms.CenterPad(self.square_edge),
-                    transforms.EVAL_TRANSFORM,
-                    transforms.Encoders(encoders),
-                ])
-
-            if self.extended_scale:
-                rescale_t = transforms.RescaleRelative(
-                    scale_range=(0.2 * self.rescale_images,
-                                2.0 * self.rescale_images),
-                    power_law=True, stretch_range=(0.75, 1.33))
-            else:
-                rescale_t = transforms.RescaleRelative(
-                    scale_range=(0.33 * self.rescale_images,
-                                1.33 * self.rescale_images),
-                    power_law=True, stretch_range=(0.75, 1.33))
-
+        #Transforms.Compose is chaining different transformations together
+        if not self.augmentation:
             return transforms.Compose([
                 transforms.NormalizeAnnotations(),
-                transforms.RandomApply(transforms.HFlip(self.LANE_KEYPOINTS, self.HFLIP), 0.5),
-                rescale_t,
-                transforms.RandomApply(transforms.Blur(), self.blur),
-                transforms.RandomChoice(
-                    [transforms.RotateBy90(),
-                    transforms.RotateUniform(30.0)],
-                    [self.orientation_invariant, 0.2],
-                ),
-                transforms.Crop(self.square_edge, use_area_of_interest=True),
+                transforms.RescaleAbsolute(self.square_edge),
                 transforms.CenterPad(self.square_edge),
-                transforms.MinSize(min_side=32.0),
-                transforms.TRAIN_TRANSFORM,
+                transforms.EVAL_TRANSFORM,
                 transforms.Encoders(encoders),
             ])
 
-        def train_loader(self):
-            train_data = CocoLoader(
-                image_dir=self.train_image_dir,
-                ann_file=self.train_annotations,
-                preprocess=self._preprocess(),
-                annotation_filter=True,
-                min_kp_anns=self.min_kp_anns,
-                category_ids=[1]
-            )
+        if self.extended_scale:
+            rescale_t = transforms.RescaleRelative(
+                scale_range=(0.2 * self.rescale_images,
+                            2.0 * self.rescale_images),
+                power_law=True, stretch_range=(0.75, 1.33))
+        else:
+            rescale_t = transforms.RescaleRelative(
+                scale_range=(0.33 * self.rescale_images,
+                            1.33 * self.rescale_images),
+                power_law=True, stretch_range=(0.75, 1.33))
 
-            return torch.utils.data.Dataloader(train_data,
-            batch_size=self.batch_size, shuffle=not self.debug, pin_memory=self.pin_memory,
-            num_workers=self.loader_workers, drop_last=True, collate_fn=collate_images_anns_meta)
-        
-        def val_loader(self):
-            val_data = CocoLoader(
-                image_dir=self.val_image_dir,
-                ann_file=self.val_annotations,
-                preprocess=self._preprocess(),
-                annotation_filter=True,
-                min_kp_anns=self.min_kp_anns,
-                category_ids=[1],
-            )
+        return transforms.Compose([
+            transforms.NormalizeAnnotations(),
+            #transforms.RandomApply(transforms.HFlip(LANE_KEYPOINTS, HFLIP), 0.5),
+            rescale_t,
+            transforms.RandomApply(transforms.Blur(), self.blur),
+            transforms.RandomChoice(
+                [transforms.RotateBy90(),
+                transforms.RotateUniform(30.0)],
+                [self.orientation_invariant, 0.2],
+            ),
+            transforms.Crop(self.square_edge, use_area_of_interest=True),
+            transforms.CenterPad(self.square_edge),
+            transforms.MinSize(min_side=32.0),
+            transforms.TRAIN_TRANSFORM,
+            transforms.Encoders(encoders),
+        ])
 
-            return torch.utils.data.DataLoader(val_data,
-                batch_size=self.batch_size, shuffle=False,
-                pin_memory=self.pin_memory, num_workers=self.loader_workers, drop_last=True,
-                collate_fn=collate_images_targets_meta
-            )
-        def metrics(self):
-            return [metric.Coco(COCO(self.eval_annotations), max_per_image=20,
-            category_ids=[1], iou_type='keypoints', keypoint_oks_sigmas=LANE_SIGMAS)]
+    def train_loader(self):
+        train_data = CocoLoader(
+            image_dir=self.train_image_dir,
+            ann_file=self.train_annotations,
+            preprocess=self._preprocess(),
+            annotation_filter=True,
+            min_kp_anns=self.min_kp_anns,
+            category_ids=[1]
+        )
+
+        return torch.utils.data.Dataloader(train_data,
+        batch_size=self.batch_size, shuffle=not self.debug, pin_memory=self.pin_memory,
+        num_workers=self.loader_workers, drop_last=True, collate_fn=collate_images_anns_meta)
+    
+    def val_loader(self):
+        val_data = CocoLoader(
+            image_dir=self.val_image_dir,
+            ann_file=self.val_annotations,
+            preprocess=self._preprocess(),
+            annotation_filter=True,
+            min_kp_anns=self.min_kp_anns,
+            category_ids=[1],
+        )
+
+        return torch.utils.data.DataLoader(val_data,
+            batch_size=self.batch_size, shuffle=False,
+            pin_memory=self.pin_memory, num_workers=self.loader_workers, drop_last=True,
+            collate_fn=collate_images_targets_meta
+        )
+    def metrics(self):
+        return [metric.Coco(COCO(self.eval_annotations), max_per_image=20,
+        category_ids=[1], iou_type='keypoints', keypoint_oks_sigmas=LANE_SIGMAS)]
