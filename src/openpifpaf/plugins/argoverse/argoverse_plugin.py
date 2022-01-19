@@ -1,7 +1,7 @@
 import torch
 import argparse
 import numpy as np
-
+import torch.utils.data.dataloader as DataLoader
 try:
     from pycocotools.coco import COCO
 except ImportError:
@@ -25,8 +25,8 @@ class ArgoversePlugin(DataModule):
     val_annotations = 'dataset-argoverse/val_data_anns.json'
     eval_annotations = val_annotations
 
-    train_image_dir = 'data/images/train_data/'
-    val_image_dir = 'data/images/val_data/'
+    train_image_dir = 'dataset-argoverse/data/images/train_data/'
+    val_image_dir = 'dataset-argoverse/data/images/val_data/'
     eval_image_dir = val_image_dir
 
     orientation_invariant = 0.0
@@ -188,10 +188,11 @@ class ArgoversePlugin(DataModule):
             min_kp_anns=self.min_kp_anns,
             category_ids=[1]
         )
-
-        return torch.utils.data.Dataloader(train_data,
+        
+        return torch.utils.data.DataLoader(train_data,
         batch_size=self.batch_size, shuffle=not self.debug, pin_memory=self.pin_memory,
-        num_workers=self.loader_workers, drop_last=True, collate_fn=collate_images_anns_meta)
+        num_workers=self.loader_workers, drop_last=True, collate_fn=collate_images_targets_meta)
+
     
     def val_loader(self):
         val_data = CocoLoader(

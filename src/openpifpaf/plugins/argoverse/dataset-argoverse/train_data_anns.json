@@ -1,0 +1,283 @@
+{
+    "info": {
+        "description": "Argoverse test dataset",
+        "url": "N/AS",
+        "version": "0.0",
+        "year": 2022,
+        "contributor": "AVL",
+        "date_created": "2022/01"
+    },
+    "licenses": [
+        {
+            "url": "http://creativecommons.org/licenses/by-nc-sa/2.0/",
+            "id": 1,
+            "name": "Attribution-NonCommercial-ShareAlike License"
+        }
+    ],
+    "images": [
+        {
+            "license": 1,
+            "file_name": "0001.png",
+            "coco_url": "NA",
+            "height": 1200,
+            "width": 1920,
+            "date_captured": "idk",
+            
+            "id": 0
+        }
+    ],
+    "annotations": [
+        {
+            "segmentation": [
+                []
+            ],
+            "num_keypoints": 3,
+            "area": 0,
+            "iscrowd": 0,
+            "keypoints": [
+                21.0,
+                734.0,
+                2,
+                869.0,
+                716.0,
+                2,
+                1576.0,
+                726.0,
+                2
+            ],
+            "image_id": 0,
+            
+            "category_id": 1,
+            "id": 1
+        },
+        {
+            "segmentation": [
+                []
+            ],
+            "num_keypoints": 3,
+            "area": 0,
+            "iscrowd": 0,
+            "keypoints": [
+                966.0,
+                859.0,
+                2,
+                1157.0,
+                736.0,
+                2,
+                1576.0,
+                726.0,
+                2
+            ],
+            "image_id": 0,
+            
+            "category_id": 1,
+            "id": 2
+        },
+        {
+            "segmentation": [
+                []
+            ],
+            "num_keypoints": 3,
+            "area": 0,
+            "iscrowd": 0,
+            "keypoints": [
+                21.0,
+                733.0,
+                2,
+                643.0,
+                706.0,
+                2,
+                816.0,
+                680.0,
+                2
+            ],
+            "image_id": 0,
+            
+            "category_id": 1,
+            "id": 3
+        },
+        {
+            "segmentation": [
+                []
+            ],
+            "num_keypoints": 1,
+            "area": 0,
+            "iscrowd": 0,
+            "keypoints": [
+                1576.0,
+                726.0,
+                2,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "image_id": 0,
+            
+            "category_id": 1,
+            "id": 5
+        },
+        {
+            "segmentation": [
+                []
+            ],
+            "num_keypoints": 3,
+            "area": 0,
+            "iscrowd": 0,
+            "keypoints": [
+                478.0,
+                863.0,
+                2,
+                751.0,
+                713.0,
+                2,
+                816.0,
+                680.0,
+                2
+            ],
+            "image_id": 0,
+            
+            "category_id": 1,
+            "id": 6
+        },
+        {
+            "segmentation": [
+                []
+            ],
+            "num_keypoints": 3,
+            "area": 0,
+            "iscrowd": 0,
+            "keypoints": [
+                816.0,
+                680.0,
+                2,
+                870.0,
+                656.0,
+                2,
+                893.0,
+                645.0,
+                2
+            ],
+            "image_id": 0,
+            
+            "category_id": 1,
+            "id": 7
+        },
+        {
+            "segmentation": [
+                []
+            ],
+            "num_keypoints": 3,
+            "area": 0,
+            "iscrowd": 0,
+            "keypoints": [
+                966.0,
+                859.0,
+                2,
+                971.0,
+                713.0,
+                2,
+                972.0,
+                680.0,
+                2
+            ],
+            "image_id": 0,
+            
+            "category_id": 1,
+            "id": 8
+        },
+        {
+            "segmentation": [
+                []
+            ],
+            "num_keypoints": 2,
+            "area": 0,
+            "iscrowd": 0,
+            "keypoints": [
+                0,
+                0,
+                0,
+                968.0,
+                1210.0,
+                2,
+                966.0,
+                859.0,
+                2
+            ],
+            "image_id": 0,
+            
+            "category_id": 1,
+            "id": 9
+        },
+        {
+            "segmentation": [
+                []
+            ],
+            "num_keypoints": 3,
+            "area": 0,
+            "iscrowd": 0,
+            "keypoints": [
+                972.0,
+                680.0,
+                2,
+                970.0,
+                652.0,
+                2,
+                969.0,
+                642.0,
+                2
+            ],
+            "image_id": 0,
+            
+            "category_id": 1,
+            "id": 13
+        },
+        {
+            "segmentation": [
+                []
+            ],
+            "num_keypoints": 2,
+            "area": 0,
+            "iscrowd": 0,
+            "keypoints": [
+                0,
+                0,
+                0,
+                21.0,
+                1110.0,
+                2,
+                478.0,
+                863.0,
+                2
+            ],
+            "image_id": 0,
+            
+            "category_id": 1,
+            "id": 15
+        }
+    ],
+    "categories": [
+        {
+            "supercategory": "lane",
+            "id": 1,
+            "name": "lane control points",
+            "keypoints": [
+                "head",
+                "center",
+                "tail"
+            ],
+            "skeleton": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    2,
+                    3
+                ]
+            ]
+        }
+    ]
+}
